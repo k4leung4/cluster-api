@@ -105,13 +105,7 @@ items:
       - ${PUBLICIP}
       - ${PRIVATEIP}
       EOF
-
-      # Create and set bridge-nf-call-iptables to 1 to pass the kubeadm preflight check.
-      # Workaround was found here:
-      # http://zeeshanali.com/sysadmin/fixed-sysctl-cannot-stat-procsysnetbridgebridge-nf-call-iptables/
-      modprobe br_netfilter
-
-      kubeadm init --config /etc/kubernetes/kubeadm_config.yaml
+      kubeadm init --config /etc/kubernetes/kubeadm_config.yaml --ignore-preflight-errors=all
       for tries in $(seq 1 60); do
           kubectl --kubeconfig /etc/kubernetes/kubelet.conf annotate --overwrite node $(hostname) machine=${MACHINE} && break
           sleep 1
